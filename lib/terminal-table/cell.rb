@@ -59,7 +59,8 @@ module Terminal
       def render(line = 0)
         left = " " * @table.style.padding_left
         right = " " * @table.style.padding_right
-        render_width = Unicode::width(lines[line].to_s) - Unicode::width(escape(lines[line])) + width
+        escape_string_width = lines[line].to_s.size - escape(lines[line]).size
+        render_width = width + escape_string_width
         "#{left}#{lines[line]}#{right}".align(alignment, render_width + @table.cell_padding)
       end
       alias :to_s :render
