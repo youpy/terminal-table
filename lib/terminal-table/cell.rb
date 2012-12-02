@@ -1,3 +1,4 @@
+require 'unicode'
 
 module Terminal
   class Table
@@ -26,7 +27,7 @@ module Terminal
         @value = options.fetch :value, value
         @alignment = options.fetch :alignment, nil
         @colspan = options.fetch :colspan, 1
-        @width = options.fetch :width, @value.to_s.size
+        @width = options.fetch :width, Unicode::width(@value.to_s)
         @index = options.fetch :index
         @table = options.fetch :table
       end
@@ -58,7 +59,7 @@ module Terminal
       def render(line = 0)
         left = " " * @table.style.padding_left
         right = " " * @table.style.padding_right
-        render_width = lines[line].to_s.size - escape(lines[line]).size + width
+        render_width = Unicode::width(lines[line].to_s) - Unicode::width(escape(lines[line])) + width
         "#{left}#{lines[line]}#{right}".align(alignment, render_width + @table.cell_padding)
       end
       alias :to_s :render
@@ -68,7 +69,7 @@ module Terminal
       # removes all ANSI escape sequences (e.g. color)
       
       def value_for_column_width_recalc
-        lines.map{ |s| escape(s) }.max_by{ |s| s.size }
+        lines.map{ |s| escape(s) }.max_by{ |s| Unicode::width(s) }
       end
       
       ##
