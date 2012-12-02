@@ -27,7 +27,7 @@ module Terminal
         @value = options.fetch :value, value
         @alignment = options.fetch :alignment, nil
         @colspan = options.fetch :colspan, 1
-        @width = options.fetch :width, Unicode::width(@value.to_s)
+        @width = options.fetch :width, @value.to_s.display_width
         @index = options.fetch :index
         @table = options.fetch :table
       end
@@ -70,7 +70,7 @@ module Terminal
       # removes all ANSI escape sequences (e.g. color)
       
       def value_for_column_width_recalc
-        lines.map{ |s| escape(s) }.max_by{ |s| Unicode::width(s) }
+        lines.map{ |s| escape(s) }.max_by{ |s| s.display_width }
       end
       
       ##
